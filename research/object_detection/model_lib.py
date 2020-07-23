@@ -442,6 +442,7 @@ def create_model_fn(detection_model_fn, configs, hparams=None, use_tpu=False,
             prediction_dict,
             features[fields.InputDataFields.true_image_shape]))
 
+    print("********************************dong is here", mode, hparams.load_pretrained, train_config.fine_tune_checkpoint)
     if mode == tf.estimator.ModeKeys.TRAIN:
       load_pretrained = hparams.load_pretrained if hparams else False
       if train_config.fine_tune_checkpoint and load_pretrained:
@@ -471,6 +472,7 @@ def create_model_fn(detection_model_fn, configs, hparams=None, use_tpu=False,
 
           scaffold_fn = tpu_scaffold
         else:
+          print('*********************dong here laod checkpoint', train_config.fine_tune_checkpoint, available_var_map)
           tf.train.init_from_checkpoint(train_config.fine_tune_checkpoint,
                                         available_var_map)
 

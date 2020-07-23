@@ -22,7 +22,7 @@ from absl import flags
 
 import tensorflow.compat.v1 as tf
 
-from object_detection import model_lib
+from object_detection import model_lib, model_hparams
 
 flags.DEFINE_string(
     'model_dir', None, 'Path to output model directory '
@@ -62,6 +62,7 @@ def main(unused_argv):
   config = tf.estimator.RunConfig(model_dir=FLAGS.model_dir)
 
   train_and_eval_dict = model_lib.create_estimator_and_inputs(
+      hparams=model_hparams.create_hparams(None),
       run_config=config,
       pipeline_config_path=FLAGS.pipeline_config_path,
       train_steps=FLAGS.num_train_steps,

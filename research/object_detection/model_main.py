@@ -40,6 +40,7 @@ flags.DEFINE_integer('sample_1_of_n_eval_on_train_examples', 5, 'Will sample '
                      'one of every n train input examples for evaluation, '
                      'where n is provided. This is only used if '
                      '`eval_training_data` is True.')
+flags.DEFINE_integer('num_gpus', 1, 'number of gpus to use')
 flags.DEFINE_string(
     'checkpoint_dir', None, 'Path to directory holding a checkpoint.  If '
     '`checkpoint_dir` is provided, this binary operates in eval-only mode, '
@@ -60,6 +61,11 @@ def main(unused_argv):
   flags.mark_flag_as_required('model_dir')
   flags.mark_flag_as_required('pipeline_config_path')
   config = tf.estimator.RunConfig(model_dir=FLAGS.model_dir)
+  if FLAGS.num_gpus == 1:
+    config = tf.estimator.RunConfig(model_dir=FLAGS.model_dir)
+  else:
+    strategy = tf.distribute.MirroredStrategy()
+    config = tf.estimator.RunConfig(model_dir=FLAGS.model_dir, train_distribute=strategy)
 
   train_and_eval_dict = model_lib.create_estimator_and_inputs(
       hparams=model_hparams.create_hparams(None),

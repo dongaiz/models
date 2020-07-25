@@ -168,17 +168,17 @@ def _tucker_conv(
     return h
 
 
-def mobiledet_cpu_backbone(h, multiplier=1.0):
+def mobiledet_cpu_backbone(h, multiplier=1.0, activation_fn=_swish6):
   """Build a MobileDet CPU backbone."""
   def _scale(filters):
     return _scale_filters(filters, multiplier)
   ibn = functools.partial(
-      _inverted_bottleneck, use_se=True, activation_fn=_swish6)
+      _inverted_bottleneck, use_se=True, activation_fn=activation_fn)
 
   endpoints = {}
-  h = _conv(h, _scale(16), 3, strides=2, activation_fn=_swish6)
+  h = _conv(h, _scale(16), 3, strides=2, activation_fn=activation_fn)
   h = _inverted_bottleneck_no_expansion(
-      h, _scale(8), use_se=True, activation_fn=_swish6)
+      h, _scale(8), use_se=True, activation_fn=activation_fn)
   endpoints['C1'] = h
   h = ibn(h, _scale(16), expansion=4, strides=2, residual=False)
   endpoints['C2'] = h
@@ -490,6 +490,34 @@ class SSDMobileDetCPUFeatureExtractor(SSDMobileDetFeatureExtractorBase):
                scope_name='MobileDetCPU'):
     super(SSDMobileDetCPUFeatureExtractor, self).__init__(
         backbone_fn=mobiledet_cpu_backbone,
+        is_training=is_training,
+        depth_multiplier=depth_multiplier,
+        min_depth=min_depth,
+        pad_to_multiple=pad_to_multiple,
+        conv_hyperparams_fn=conv_hyperparams_fn,
+        reuse_weights=reuse_weights,
+        use_explicit_padding=use_explicit_padding,
+        use_depthwise=use_depthwise,
+        override_base_feature_extractor_hyperparams=override_base_feature_extractor_hyperparams,
+        scope_name=scope_name)
+
+
+class SSDMobileDetCPUFeatureExtractorRelu6(SSDMobileDetFeatureExtractorBase):
+  """MobileDet-CPU feature extractor."""
+
+  def __init__(self,
+               is_training,
+               depth_multiplier,
+               min_depth,
+               pad_to_multiple,
+               conv_hyperparams_fn,
+               reuse_weights=None,
+               use_explicit_padding=False,
+               use_depthwise=False,
+               override_base_feature_extractor_hyperparams=False,
+               scope_name='MobileDetCPU'):
+    super(SSDMobileDetCPUFeatureExtractorRelu6, self).__init__(
+        backbone_fn=functools.partial(mobiledet_cpu_backbone, activation_fn=tf.nn.relu6),
         is_training=is_training,
         depth_multiplier=depth_multiplier,
         min_depth=min_depth,

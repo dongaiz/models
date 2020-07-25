@@ -84,7 +84,7 @@ if tf_version.is_tf1():
   from object_detection.models.ssd_mobilenet_v2_feature_extractor import SSDMobileNetV2FeatureExtractor
   from object_detection.models.ssd_mobilenet_v3_feature_extractor import SSDMobileNetV3LargeFeatureExtractor
   from object_detection.models.ssd_mobilenet_v3_feature_extractor import SSDMobileNetV3SmallFeatureExtractor
-  from object_detection.models.ssd_mobiledet_feature_extractor import SSDMobileDetCPUFeatureExtractor
+  from object_detection.models.ssd_mobiledet_feature_extractor import SSDMobileDetCPUFeatureExtractor, SSDMobileDetCPUFeatureExtractorRelu6
   from object_detection.models.ssd_mobiledet_feature_extractor import SSDMobileDetDSPFeatureExtractor
   from object_detection.models.ssd_mobiledet_feature_extractor import SSDMobileDetEdgeTPUFeatureExtractor
   from object_detection.models.ssd_mobiledet_feature_extractor import SSDMobileDetGPUFeatureExtractor
@@ -204,6 +204,8 @@ if tf_version.is_tf1():
           SSDPNASNetFeatureExtractor,
       'ssd_mobiledet_cpu':
           SSDMobileDetCPUFeatureExtractor,
+      'ssd_mobiledet_cpu_relu6':
+          SSDMobileDetCPUFeatureExtractorRelu6,
       'ssd_mobiledet_dsp':
           SSDMobileDetDSPFeatureExtractor,
       'ssd_mobiledet_edgetpu':
